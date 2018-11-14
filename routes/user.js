@@ -133,6 +133,7 @@ const user = [
                 if(fans)  result.fans = fans;
                 if(point)  result.point = point;
                 if(tag)  result.tag = tag;
+                // result.pda = 100000;
                 const re = await result.save();
                 if(re){
                     return {

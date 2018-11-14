@@ -2,8 +2,35 @@ const Joi = require('joi');
 const Adv = require('../models/Adv');
 const Read = require('../models/Read');
 const Comment = require('../models/Comment');
+const History = require('../models/History');
 const User = require('../models/User');
+const moment = require('moment');
 
+
+async function pda(token,advId,pda,desc){
+    const user1 = await User.findOne({_id:token});
+    const user2 = await User.findOne({userName:'yanglh'});
+    user1.pda = user1.pda+pda;
+    user2.pda = user2.pda-pda;
+    const r1 = await user1.save();
+    const r2 = await user2.save();
+    if(!r1 || !r2){
+        return false;
+    }
+    const history = new History({
+        userId:token,
+        advId,
+        pda,
+        desc,
+        createAt:new Date()
+    });
+    const data = await history.save();
+    if(!data){
+        return false;
+    }
+    console.log(data)
+    return true;
+}
 const adv = [{
     method: 'POST',
     path: '/api/v1/adv/list',
@@ -33,7 +60,7 @@ const adv = [{
         tags: ['api'],
         validate: {
             payload: Joi.object({
-                advId: Joi.string().required().description('广告ID').default('41224d776a326fb40f000001'),
+                advId: Joi.string().required().description('广告ID').default('5be9298a700e3c743c14f6e7'),
             }).label('广告'),
         }
     },
@@ -66,6 +93,86 @@ const adv = [{
     }
 }, {
     method: 'POST',
+    path: '/api/v1/adv/alter',
+    config: {
+        description: '修改广告详情',
+        tags: ['api'],
+        validate: {
+            payload: Joi.object({
+                advId: Joi.string().required().description('广告ID').default('41224d776a326fb40f000001'),
+                pda: Joi.string().required().description('浏览奖励PDA').default('1'),
+                author: Joi.string().required().description('作者').default('author'),
+                title: Joi.string().required().description('标题').default('title'),
+                content: Joi.string().required().description('正文 type-1文字 2图片 3视频').default('[{type:\'1\',data:\'\'}]')
+            }).label('广告'),
+        }
+    },
+    handler: async (req, res) => {
+        let failMsg = '';
+        try {
+
+            const contentJson = 
+            [
+              {
+                type:1,
+                data:'段落1====段落1====段落1====段落1====段落1====段落1====段落1====段落1====段落1====段落1====',
+              },
+              {
+                type:3,
+                data:'https://sit-fruit-chain-front.huntor.cn:10071/v/v001.mp4',
+              },
+              {
+                type:1,
+                data:'段落2====段落2====段落2====段落2====段落2====段落2====段落2====段落2====段落2====段落2====段落2====段落2====',
+              },
+              {
+                type:2,
+                data:'https://pic2.zhimg.com/50/v2-710b7a6fea12a7203945b666790b7181_hd.jpg',
+              },
+              {
+                type:1,
+                data:'段落3====段落3====段落3====段落3====段落3====段落3====段落3====段落3====段落3====段落3====',
+              },
+            ];
+            const { advId,pda,title,author,content } = req.payload;
+            const adv = await Adv.findOne({ _id:advId });
+            if(!adv){
+                return {
+                    code: 0,
+                    msg: '查询失败',
+                    data
+                }
+            }
+            if(title) adv.title = title;
+            if(author) adv.author = author;
+            if(pda) adv.pda = pda;
+            if(content) adv.content = content;
+            // adv.content = JSON.stringify(contentJson);
+            const data = await adv.save();
+            if(data){
+                return {
+                    code: 0,
+                    msg: '更新成功',
+                    data
+                }
+            }
+        } catch (error) {
+            console.log(error);
+
+            failMsg += error;
+            return {
+                code: -1,
+                msg: '查询失败'+failMsg,
+            };
+        }
+        
+        return {
+            code: -1,
+            msg: '查询失败'+failMsg,
+        };
+    }
+},{
+    method: 'POST',
     path: '/api/v1/adv/enter',
     config: {
         description: '开始浏览广告',
@@ -73,12 +180,13 @@ const adv = [{
         validate: {
             payload: Joi.object({
                 token: Joi.string().required().description('token').default('41224d776a326fb40f000001'),
-                advId: Joi.string().required().description('advId').default('41224d776a326fb40f000001'),
+                advId: Joi.string().required().description('advId').default('5be9298a700e3c743c14f6e7'),
             }).label('广告'),
         }
     },
     handler: async (req, res) => {
         const { token,advId } = req.payload;
+        const old = await Read.findOne({userId:token,advId});
         const user = await User.findOne({ _id:token });
         if(!user){
             return {
@@ -99,6 +207,17 @@ const adv = [{
             beginAt: new Date(),
         });
         const data = await read.save();
+
+
+        if(!old){
+            const re = await pda(token,advId,1,'浏览');
+            if(!re){
+                return {
+                    code: -1,
+                    msg:'浏览失败'
+                }
+            } 
+        }
         if(data){
             return {
                 code: 0,
@@ -214,14 +333,23 @@ const adv = [{
     handler: async (req, res) => {
         const { token,advId } = req.payload;
         const data = await Comment.find({
-            userId:token,
             advId
-        });
+        }).populate('userId');
         if(data){
+            const arr = [];
+            for(const item of data){
+                console.log(item)
+                arr.push({
+                    name:item.userId.nickname,
+                    content:item.content,
+                    date:new Date(item.createAt).getTime(),
+                    dateStr:moment(item.createAt).format('YYYYMMDD HHmmss')
+                })
+            }
             return {
                 code: 0,
                 msg: '查询成功',
-                data
+                data:arr
             }
         }
         return {
@@ -238,7 +366,7 @@ const adv = [{
         validate: {
             payload: Joi.object({
                 token: Joi.string().required().description('token').default('41224d776a326fb40f000001'),
-                advId: Joi.number().required().description('广告ID').default('41224d776a326fb40f000001'),
+                advId: Joi.string().required().description('广告ID').default('41224d776a326fb40f000001'),
                 content: Joi.string().required().description('评论内容').default('content'),
             }).label('评论')
         }
@@ -246,7 +374,7 @@ const adv = [{
     handler: async (req, res) => {
         try {
             const { token,advId,content } = req.payload;
-
+            const oldComment = await Comment.findOne({userId:token,advId});
             const user = await User.findOne({_id:token});
             if(!user){
                 return {
@@ -254,7 +382,7 @@ const adv = [{
                     msg: '无效的token'
                 }
             }
-            const adv = await Adv.findById(1234);
+            const adv = await Adv.findOne({_id:advId});
             if(!adv){
                 return {
                     code: -1,
@@ -268,17 +396,30 @@ const adv = [{
                 createAt: new Date()
             });
             const data = await comment.save();
-            if(data){
+            if(!data){
                 return {
-                    code: 0,
-                    msg: '评论成功',
-                    data
+                    code: -1,
+                    msg:'评论失败'
                 }
+            }
+            if(!oldComment){
+                const re = await pda(token,advId,2,'评论');
+                if(!re){
+                    return {
+                        code: -1,
+                        msg:'评论失败'
+                    }
+                }
+            }
+            return {
+                code: 0,
+                msg: '评论成功',
+                id:data._id
             } 
         } catch (error) {
             return {
                 code: -1,
-                msg: '评论失3败'+error,
+                msg: '评论失败'+error,
             };
         }
         
@@ -337,7 +478,7 @@ const adv = [{
                 msg: '无效的token'
             }
         }
-        const adv = await Adv.findById(1234);
+        const adv = await Adv.findOne({_id:advId});
         if(!adv){
             return {
                 code: -1,
@@ -362,6 +503,16 @@ const adv = [{
         }
         read.favorited = true;
         const data = await read.save();
+ 
+        const re = await pda(token,advId,1,'收藏');
+        if(!re){
+            return {
+                code: -1,
+                msg:'收藏失败'
+            }
+        } 
+
+
         if(data){
             return {
                 code: 0,
@@ -388,9 +539,22 @@ const adv = [{
     },
     handler: async (req, res) => {
         const { token,advId } = req.payload;
+        const old = await Read.findOne({ userId:token,advId,shared:true });
         const read = await Read.findOne({ userId:token,advId });
         read.shared = true;
         const data = await read.save();
+
+        if(!old){
+            const re = await pda(token,advId,1,'浏览');
+            if(!re){
+                return {
+                    code: -1,
+                    msg:'分享失败'
+                }
+            } 
+        }
+
+        
         if(data){
             return {
                 code: 0,
