@@ -1,0 +1,26 @@
+{
+  "name": "pda-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server-hapi": "^2.2.0",
+    "graphql": "^14.0.2",
+    "hapi": "^17.7.0",
+    "hapi-swagger": "^9.1.2",
+    "inert": "^5.1.2",
+    "joi": "^14.0.4",
+    "moment": "^2.22.2",
+    "mongoose": "^5.3.11",
+    "moongoose": "^0.0.5",
+    "nodemon": "^1.18.6",
+    "vision": "^5.4.3"
+  }
+}
