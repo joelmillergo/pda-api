@@ -10,8 +10,9 @@ const moment = require('moment');
 async function pda(token,advId,pda,desc){
     const user1 = await User.findOne({_id:token});
     const user2 = await User.findOne({userName:'yanglh'});
-    user1.pda = user1.pda+pda;
-    user2.pda = user2.pda-pda;
+
+    user1.pda = user1.pda + pda;
+    user2.pda = user2.pda - pda;
     const r1 = await user1.save();
     const r2 = await user2.save();
     if(!r1 || !r2){
@@ -540,8 +541,16 @@ const adv = [{
     handler: async (req, res) => {
         const { token,advId } = req.payload;
         const old = await Read.findOne({ userId:token,advId,shared:true });
-        const read = await Read.findOne({ userId:token,advId });
-        read.shared = true;
+        let read = await Read.findOne({ userId:token,advId });
+        if(read){
+            read.shared = true;
+        }else{
+            read = new Read({
+                userId:token,
+                advId,
+                shared:true,
+            })
+        }
         const data = await read.save();
 
         if(!old){
