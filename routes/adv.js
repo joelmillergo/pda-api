@@ -247,7 +247,7 @@ const adv = [{
     },
     handler: async (req, res) => {
         const { token,advId,readId } = req.payload;
-        const user = await User.findOne({ token });
+        const user = await User.findOne({ _id:token });
         if(!user){
             return {
                 code: -1,
