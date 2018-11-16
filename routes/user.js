@@ -205,7 +205,7 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const data = await Read.find({userId:token,shared:false});
+            const data = await Read.find({userId:token,shared:false}).populate('advId');
             if(data){
                 for(const item of data){
                    
