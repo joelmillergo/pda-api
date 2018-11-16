@@ -205,11 +205,10 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const data = await Read.find({userId:token}).where(this.shared == true);
+            const data = await Read.find({userId:token,shared:false});
             if(data){
-                for(const item of read){
-                    const adv = await adv.find({_id:read.advId})
-                    read.adv = adv;
+                for(const item of data){
+                   
                 }
                 return {
                     code: 0,
