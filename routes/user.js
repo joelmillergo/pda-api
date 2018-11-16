@@ -174,12 +174,9 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const data = await Read.find({userId:token});
+            const data = await Read.find({userId:token}).populate('advId');
             if(data){
-                for(const item of read){
-                    const adv = await adv.find({_id:read.advId})
-                    read.adv = adv;
-                }
+                
                 return {
                     code: 0,
                     msg: '查询成功',
