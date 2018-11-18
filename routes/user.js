@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Read = require('../models/Read');
 const Joi = require('joi');
+const History = require('../models/History');
 
 const user = [
     {
@@ -176,7 +177,6 @@ const user = [
             const { token } = req.payload;
             const data = await Read.find({userId:token}).populate('advId');
             if(data){
-                
                 return {
                     code: 0,
                     msg: '查询成功',
@@ -231,6 +231,15 @@ const user = [
             }
         },
         handler: async  (req,res) => {
+            const { token } = req.payload;
+            const data = await History({userId:token});
+            if(data){
+                return {
+                    code: 0,
+                    msg: '查询成功',
+                    data
+                }
+            }
             return  {
                 code: -1,
                 msg:'查询失败'
