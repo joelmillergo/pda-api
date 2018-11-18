@@ -242,7 +242,7 @@ const user = [
                     data.push({
                         advName:item.advId.title,
                         time:moment(item.createAt).valueOf(),
-                        timeStr:Global.getTimeStr(item.createAt),
+                        timeStr:Global.getTimeStr(item.createAt,'MM月DD日 HH:mm'),
                         pda:item.pda,
                         desc:item.desc
                     })

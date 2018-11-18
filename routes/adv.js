@@ -5,7 +5,7 @@ const Comment = require('../models/Comment');
 const History = require('../models/History');
 const User = require('../models/User');
 const moment = require('moment');
-
+const Global = require('./global');
 
 async function pda(token,advId,pda,desc){
     const user1 = await User.findOne({_id:token});
@@ -46,11 +46,30 @@ const adv = [{
     },
     handler: async (req, res) => {
         // const { searchName } = req.payload;
-        const data = await Adv.find();
+        const result = await Adv.find();
+        if(result){
+            const data = [];
+            for(const item of result){
+                const r1 = await Read.find({advId:item._id});
+                data.push({
+                    advId:item._id,
+                    author:item.author,
+                    pda:item.pda,
+                    title:item.title,
+                    timeStr:Global.getTimeStr(item.createAt,'YYYY-MM-DD'),
+                    content:item.content,
+                    reads:r1.length,
+                });
+            }
+            return {
+                code: 0,
+                msg: '查询成功',
+                data
+            };
+        }
         return {
-            code: 0,
-            msg: '查询成功',
-            data
+            code: -1,
+            msg: '查询失败',
         };
     }
 }, {
