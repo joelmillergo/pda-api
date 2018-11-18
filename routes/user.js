@@ -2,6 +2,9 @@ const User = require('../models/User');
 const Read = require('../models/Read');
 const Joi = require('joi');
 const History = require('../models/History');
+const Global  = require( './global');
+const moment = require('moment');
+
 
 const user = [
     {
@@ -232,8 +235,18 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const data = await History({userId:token});
-            if(data){
+            const result = await History.find({userId:token}).populate('advId');
+            if(result){
+                const data = [];
+                for(const item of result){
+                    data.push({
+                        advName:item.advId.title,
+                        time:moment(item.createAt).valueOf(),
+                        timeStr:Global.getTimeStr(item.createAt),
+                        pda:item.pda,
+                        desc:item.desc
+                    })
+                }
                 return {
                     code: 0,
                     msg: '查询成功',
