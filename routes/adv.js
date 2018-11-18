@@ -88,8 +88,16 @@ const adv = [{
         let failMsg = '';
         try {
             const { advId } = req.payload;
-            const data = await Adv.findOne({ _id:advId });
-            if(data){
+            const item = await Adv.findOne({ _id:advId });
+            if(item){
+                const data ={
+                    pda:item["pda"],
+                    author:item["author"],
+                    content:item["content"],
+                    createAt:Global.getTimeStr( item["createAt"],'YYYY-MM-DD HH:mm'),
+                    _id:item["_id"],
+                    title:item["title"],
+                };
                 return {
                     code: 0,
                     msg: '查询成功',
@@ -167,7 +175,7 @@ const adv = [{
             if(author) adv.author = author;
             if(pda) adv.pda = pda;
             if(content) adv.content = content;
-            // adv.content = JSON.stringify(contentJson);
+            adv.content = JSON.stringify(contentJson);
             const data = await adv.save();
             if(data){
                 return {
@@ -310,9 +318,9 @@ const adv = [{
         validate: {
             payload: Joi.object({
                 title: Joi.string().required().description('标题').default('title'),
-                pda: Joi.string().required().description('浏览奖励PDA').default('1'),
+                pda: Joi.number().required().description('浏览奖励PDA').default(1),
                 author: Joi.string().required().description('作者').default('author'),
-                content: Joi.array().required().description('正文 type-1文字 2图片 3视频').default('[{type:\'1\',data:\'\]}]')
+                content: Joi.string().required().description('正文 type-1文字 2图片 3视频').default('[{type:\'1\',data:\'\'}]')
             }).label('user')
         }
     },
@@ -363,7 +371,7 @@ const adv = [{
                     name:item.userId.nickname,
                     content:item.content,
                     date:new Date(item.createAt).getTime(),
-                    dateStr:moment(item.createAt).format('YYYYMMDD HHmmss')
+                    dateStr:Global.getTimeStr(item.createAt,'MM-DD HH:mm')
                 })
             }
             return {
