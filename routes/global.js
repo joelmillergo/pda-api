@@ -5,9 +5,10 @@ function getTimeStr(t,f){
     const now  = new Date().getTime();
     // console.log(t,now,time);
     let str = moment(t).format(f)
-
+    let diff = 0;
     if(now-time <= 3600000*24){
-      str = Math.ceil((now-time)/3600000) +'小时前';
+      diff = (now-time)/3600000;
+      str = Math.ceil(diff) +'小时前';
     }
     return str;
 }
