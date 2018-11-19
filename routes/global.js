@@ -10,6 +10,10 @@ function getTimeStr(t,f){
       diff = (now-time)/3600000;
       str = Math.ceil(diff) +'小时前';
     }
+    console.log('now',now,moment(now).format('YYYY-MM-DD HH:mm'));
+    console.log('time',time,moment(time).format('YYYY-MM-DD HH:mm'));
+    // console.log('now',now,moment(now).format('YYYY-MM-DD HH:mm'));
+
     return str;
 }
 

@@ -193,7 +193,7 @@ const user = [
                    data.push({
                        advId:item._id,
                         title:item.advId.title,
-                        advTimeStr:Global.getTimeStr(item.advId.createAt,'MM月DD日 HH:mm'),
+                        advTimeStr:Global.getTimeStr(item.advId.createAt,'MM月DD日'),
                         pic,
                         author:item.advId.author,
                         readTimeStr:Global.getTimeStr(item.beginAt,'MM月DD日 HH:mm'),
@@ -250,7 +250,7 @@ const user = [
                    data.push({
                        advId:item._id,
                         title:item.advId.title,
-                        advTimeStr:Global.getTimeStr(item.advId.createAt,'MM月DD日 HH:mm'),
+                        advTimeStr:Global.getTimeStr(item.advId.createAt,'MM月DD日'),
                         pic,
                         author:item.advId.author,
                         readTimeStr:Global.getTimeStr(item.beginAt,'MM月DD日 HH:mm'),
