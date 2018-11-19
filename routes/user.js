@@ -191,7 +191,7 @@ const user = [
                         }
                     }
                    data.push({
-                       advId:item._id,
+                       advId:item.advId._id,
                         title:item.advId.title,
                         advTimeStr:Global.getTimeStr(item.advId.createAt,'MM月DD日'),
                         pic,
@@ -248,7 +248,7 @@ const user = [
                         }
                     }
                    data.push({
-                       advId:item._id,
+                       advId:item.advId._id,
                         title:item.advId.title,
                         advTimeStr:Global.getTimeStr(item.advId.createAt,'MM月DD日'),
                         pic,
