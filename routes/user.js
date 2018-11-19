@@ -178,7 +178,38 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const data = await Read.find({userId:token}).populate('advId');
+            const result = await Read.find({userId:token}).populate('advId');
+
+            if(result){
+                const data = [];
+                for(const item of result){
+                    let pic = "";
+                    console.log(item)
+                    for(const cnt of JSON.parse(item.advId.content)){
+                        if(cnt.type == 2){
+                            pic = cnt.data;
+                        }
+                    }
+                   data.push({
+                       advId:item._id,
+                        title:item.advId.title,
+                        advTimeStr:Global.getTimeStr(item.advId.createAt,'MM月DD日 HH:mm'),
+                        pic,
+                        author:item.advId.author,
+                        readTimeStr:Global.getTimeStr(item.beginAt,'MM月DD日 HH:mm'),
+                        shared:item.shared,
+                        favorited:item.favorited,
+                   })
+                }
+                return {
+                    code: 0,
+                    msg: '查询成功',
+                    data
+                }
+            }
+
+
+
             if(data){
                 return {
                     code: 0,
@@ -205,7 +236,7 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const result = await Read.find({userId:token,shared:false}).populate('advId');
+            const result = await Read.find({userId:token,favorited:true}).populate('advId');
             if(result){
                 const data = [];
                 for(const item of result){
