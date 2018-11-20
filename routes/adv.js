@@ -602,6 +602,56 @@ const adv = [{
             msg: '分享失败',
         };
     }
+}, {
+    method: 'POST',
+    path: '/api/v2/adv/detail',
+    config: {
+        description: '广告详情V2',
+        tags: ['api'],
+        validate: {
+            payload: Joi.object({
+                advId: Joi.string().required().description('广告ID').default('5be9298a700e3c743c14f6e7'),
+                token: Joi.string().required().description('token').default('41224d776a326fb40f000001'),
+            }).label('广告'),
+        }
+    },
+    handler: async (req, res) => {
+        let failMsg = '';
+        try {
+            const { advId,token } = req.payload;
+            const item = await Adv.findOne({ _id:advId });
+            if(item){
+                const f1 = await Read.find({userId:token,advId,favorited:true});
+                const data ={
+                    pda:item["pda"],
+                    author:item["author"],
+                    content:item["content"],
+                    createAt:Global.getTimeStr( item["createAt"],'YYYY-MM-DD HH:mm'),
+                    _id:item["_id"],
+                    title:item["title"],
+                    favorited:f1.length > 0
+                };
+                return {
+                    code: 0,
+                    msg: '查询成功',
+                    data
+                }
+            }
+        } catch (error) {
+            console.log(error);
+
+            failMsg += error;
+            return {
+                code: -1,
+                msg: '查询失败'+failMsg,
+            };
+        }
+        
+        return {
+            code: -1,
+            msg: '查询失败'+failMsg,
+        };
+    }
 }]
 
 module.exports = adv;
