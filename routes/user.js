@@ -178,7 +178,7 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const result = await Read.find({userId:token}).populate('advId');
+            const result = await Read.find({userId:token}).sort({beginAt: 'desc'}).populate('advId');
 
             if(result){
                 const data = [];
@@ -236,7 +236,7 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const result = await Read.find({userId:token,favorited:true}).populate('advId');
+            const result = await Read.find({userId:token,favorited:true}).sort({beginAt: 'desc'}).populate('advId');
             if(result){
                 const data = [];
                 for(const item of result){

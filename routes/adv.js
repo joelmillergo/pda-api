@@ -46,7 +46,7 @@ const adv = [{
     },
     handler: async (req, res) => {
         // const { searchName } = req.payload;
-        const result = await Adv.find();
+        const result = await Adv.find().sort({createAt: 'desc'});
         if(result){
             const data = [];
             for(const item of result){
@@ -362,7 +362,7 @@ const adv = [{
         const { token,advId } = req.payload;
         const data = await Comment.find({
             advId
-        }).populate('userId');
+        }).sort({createAt: 'desc'}).populate('userId');
         if(data){
             const arr = [];
             for(const item of data){
