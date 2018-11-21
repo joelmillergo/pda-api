@@ -175,7 +175,7 @@ const adv = [{
             if(author) adv.author = author;
             if(pda) adv.pda = pda;
             if(content) adv.content = content;
-            adv.content = JSON.stringify(contentJson);
+            // adv.content = JSON.stringify(contentJson);
             const data = await adv.save();
             if(data){
                 return {
