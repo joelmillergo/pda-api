@@ -622,6 +622,7 @@ const adv = [{
             const item = await Adv.findOne({ _id:advId });
             if(item){
                 const f1 = await Read.find({userId:token,advId,favorited:true});
+                const r1 = await Read.find({advId:item._id});
                 const data ={
                     pda:item["pda"],
                     author:item["author"],
@@ -629,7 +630,8 @@ const adv = [{
                     createAt:Global.getTimeStr( item["createAt"],'YYYY-MM-DD HH:mm'),
                     _id:item["_id"],
                     title:item["title"],
-                    favorited:f1.length > 0
+                    favorited:f1.length > 0,
+                    reads:r1.length,
                 };
                 return {
                     code: 0,
