@@ -285,6 +285,7 @@ const user = [
             if(result){
                 const data = [];
                 for(const item of result){
+                    console.log(item)
                     data.push({
                         advName:item.advId.title,
                         time:moment(item.createAt).valueOf(),
