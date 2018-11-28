@@ -526,10 +526,11 @@ const adv = [{
             read = new Read({
                 userId:token,
                 advId,
-                favoriteAt:new Date(),
             })
         }
         read.favorited = true;
+        read.favoriteAt = new Date();
+
         const data = await read.save();
  
         const re = await pda(token,advId,1,'收藏');
