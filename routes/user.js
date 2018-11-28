@@ -62,7 +62,7 @@ const user = [
             }
             return {
                 code: -1,
-                msg:'登录失败'
+                msg:'用户名或密码有误，请重新输入'
             };
         }
     },{
