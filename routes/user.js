@@ -197,6 +197,7 @@ const user = [
                         pic,
                         author:item.advId.author,
                         readTimeStr:Global.getTimeStr(item.beginAt,'MM月DD日 HH:mm'),
+                        commented:item.commented,
                         shared:item.shared,
                         favorited:item.favorited,
                    })

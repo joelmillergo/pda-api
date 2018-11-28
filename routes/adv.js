@@ -439,11 +439,24 @@ const adv = [{
                     }
                 }
             }
-            return {
-                code: 0,
-                msg: '评论成功',
-                id:data._id
-            } 
+
+            let currentRead = await Read.findOne({ userId:token,advId }).sort({beginAt: 'desc'});
+            if(!currentRead){
+                currentRead = new Read({
+                    userId:token,
+                    advId,
+                })
+            }
+            currentRead.commented = true;
+            const commentData = await currentRead.save();
+            if(commentData){
+                return {
+                    code: 0,
+                    msg: '评论成功',
+                    id:data._id
+                } 
+            }
+           
         } catch (error) {
             return {
                 code: -1,
@@ -515,13 +528,16 @@ const adv = [{
         }
 
 
-        let read = await Read.findOne({ userId:token,advId });
-        if(read && read.favorited){
+        let favoritedRead = await Read.findOne({ userId:token,advId,favorited:true });
+        if(favoritedRead ){
             return {
                 code: -1,
                 msg: '请勿重复收藏'
             }
         }
+
+        let read = await Read.findOne({ userId:token,advId }).sort({beginAt: 'desc'});
+        
         if(!read){
             read = new Read({
                 userId:token,
