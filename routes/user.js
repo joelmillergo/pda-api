@@ -287,7 +287,7 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const result = await History.find({userId:token}).populate('advId');
+            const result = await History.find({userId:token}).populate('advId').sort({createAt: 'desc'});
             if(result){
                 const data = [];
                 for(const item of result){
