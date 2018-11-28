@@ -579,26 +579,25 @@ const adv = [{
             payload: Joi.object({
                 token: Joi.string().required().description('token').default('41224d776a326fb40f000001'),
                 advId: Joi.string().required().description('广告ID').default('41224d776a326fb40f000001'),
-            }).label('评论')
+            }).label('分享')
         }
     },
     handler: async (req, res) => {
         const { token,advId } = req.payload;
         const old = await Read.findOne({ userId:token,advId,shared:true });
-        let read = await Read.findOne({ userId:token,advId });
-        if(read){
-            read.shared = true;
-        }else{
+        let read = await Read.findOne({ userId:token,advId }).sort({beginAt: 'desc'});
+        if(!read){
             read = new Read({
                 userId:token,
                 advId,
-                shared:true,
+                beginAt:new Date()
             })
         }
+        read.shared = true;
         const data = await read.save();
 
         if(!old){
-            const re = await pda(token,advId,1,'浏览');
+            const re = await pda(token,advId,1,'分享');
             if(!re){
                 return {
                     code: -1,
