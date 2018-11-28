@@ -85,7 +85,7 @@ const user = [
                     code: 0,
                     msg: '查询成功',
                     userName: result.userName,
-                    nickname: result.nickname,
+                    nickName: result.nickname || result.userName,
                     follow: result.follow,
                     fans: result.fans,
                     favorited: result.favorited,
