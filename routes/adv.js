@@ -526,7 +526,7 @@ const adv = [{
             read = new Read({
                 userId:token,
                 advId,
-
+                favoriteAt:new Date(),
             })
         }
         read.favorited = true;

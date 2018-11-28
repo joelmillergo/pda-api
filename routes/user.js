@@ -236,7 +236,7 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const result = await Read.find({userId:token,favorited:true}).sort({beginAt: 'desc'}).populate('advId');
+            const result = await Read.find({userId:token,favorited:true}).sort({favoriteAt: 'desc'}).populate('advId');
             if(result){
                 const data = [];
                 for(const item of result){
@@ -253,7 +253,7 @@ const user = [
                         advTimeStr:Global.getTimeStr(item.advId.createAt,'MM月DD日'),
                         pic,
                         author:item.advId.author,
-                        readTimeStr:Global.getTimeStr(item.beginAt,'MM月DD日 HH:mm'),
+                        readTimeStr:Global.getTimeStr(item.favoriteAt,'MM月DD日 HH:mm'),
                    })
                 }
                 return {

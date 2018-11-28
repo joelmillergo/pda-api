@@ -8,6 +8,7 @@ const ReadSchema = new Schema({
     shared: {type:Boolean,default:false},
     beginAt: { type:Date },
     endAt: { type:Date },
+    favoriteAt: { type:Date },
 });
 
 module.exports = mongoose.model('Read',ReadSchema);
