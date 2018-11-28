@@ -184,10 +184,14 @@ const user = [
                 const data = [];
                 for(const item of result){
                     let pic = "";
+                    let video = "";
                     console.log(item)
                     for(const cnt of JSON.parse(item.advId.content)){
                         if(cnt.type == 2){
                             pic = cnt.data;
+                        }
+                        if(cnt.type == 3){
+                            video = cnt.data;
                         }
                     }
                    data.push({
@@ -195,6 +199,7 @@ const user = [
                         title:item.advId.title,
                         advTimeStr:Global.getTimeStr(item.advId.createAt,'MM月DD日'),
                         pic,
+                        video,
                         author:item.advId.author,
                         readTimeStr:Global.getTimeStr(item.beginAt,'MM月DD日 HH:mm'),
                         commented:item.commented,
