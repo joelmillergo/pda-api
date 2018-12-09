@@ -287,13 +287,14 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const result = await History.find({userId:token}).populate('advId').sort({createAt: 'desc'});
+            const result = await History.find({userId:token}).populate('advId','taskId').sort({createAt: 'desc'});
             if(result){
                 const data = [];
                 for(const item of result){
+                    const advName = !!item ? item.advId.title : item.taskId.title;
                     console.log(item)
                     data.push({
-                        advName:item.advId.title,
+                        advName,
                         time:moment(item.createAt).valueOf(),
                         timeStr:Global.getTimeStr(item.createAt,'MM月DD日 HH:mm'),
                         pda:item.pda,

@@ -84,10 +84,10 @@ const adv = [{
             }).label('广告'),
         }
     },
-    handler: async (req, res) => {
+    handler: async (res, req) => {
         let failMsg = '';
         try {
-            const { advId } = req.payload;
+            const { advId } = res.payload;
             const item = await Adv.findOne({ _id:advId });
             if(item){
                 const data ={
@@ -235,7 +235,6 @@ const adv = [{
             beginAt: new Date(),
         });
         const data = await read.save();
-
 
         if(!old){
             const re = await pda(token,advId,1,'浏览');

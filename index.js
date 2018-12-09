@@ -7,7 +7,7 @@ const Vision = require('vision');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('./package');
 
-mongoose.connect('mongodb://test:test123@ds159263.mlab.com:59263/db196');
+mongoose.connect('mongodb://test:test123@ds159263.mlab.com:59263/db196',{ useNewUrlParser: true });
 
 mongoose.connection.once('open',() =>{
     console.log('connected to database');
