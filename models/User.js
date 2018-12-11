@@ -7,10 +7,9 @@ const UserSchema = new Schema({
     nickname: { type: String, default: '', },
     token: String,
     tag:{type:[String],default:['90后','宅']},
-    pda:{type:Number,default:10},
-    follow:{type:Number,default:9},
-    fans:{type:Number,default:99},
-    favorited:{type:Number,default:99},
+    pda:{type:Number,default:110},
+    follow:{type:Number,default:17},
+    favorited:{type:Number,default:58},
     fans:{type:Number,default:3000},
 });
 
