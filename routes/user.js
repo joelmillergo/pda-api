@@ -28,7 +28,8 @@ const user = [
             } 
              const user = new User({
                 userName,
-                password
+                password,
+                nickname:userName,
             }) 
             const result = await user.save();
             return {
@@ -287,12 +288,15 @@ const user = [
         },
         handler: async  (req,res) => {
             const { token } = req.payload;
-            const result = await History.find({userId:token}).populate('advId','taskId').sort({createAt: 'desc'});
+            const result = await History.find({userId:token}).populate('advId').sort({createAt: 'desc'});
             if(result){
                 const data = [];
                 for(const item of result){
-                    const advName = !!item ? item.advId.title : item.taskId.title;
                     console.log(item)
+                    let  advName = '';
+                    if(item.advId){
+                        advName = item.advId.title;
+                    }
                     data.push({
                         advName,
                         time:moment(item.createAt).valueOf(),
